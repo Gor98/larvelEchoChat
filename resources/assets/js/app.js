@@ -24,22 +24,23 @@ const app = new Vue({
     el: '#app',
     data: {
         messages: [
-            {
-                message:'hello',
-                user:'Jho',
-            },
-            {
-                message:'bye',
-                user:'Vxo',
-            }
+
         ]
     },
     methods:{
         addMessage(massage){
             this.messages.push(massage);
+            axios.post('/message',massage).then(response =>{
 
+            });
         },
 
+    },
+
+    created(){
+        axios.get('/messages').then(response =>{
+            this.messages = response.data
+        });
     }
 
 });

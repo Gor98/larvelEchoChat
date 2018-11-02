@@ -12,17 +12,21 @@
                 messageText: ''
             }
         },
+        props:['user'],
+
         methods:{
             sendMessage: function () {
                 this.$emit('message-sent',{
                     message: this.messageText,
-                    user: 'Joe Shep',
+                    user:{
+                        name:this.user.name
+                    },
                 });
                 this.messageText =''
             }
         },
         mounted() {
-            console.log('Component mounted.')
+           
         }
     }
 </script>

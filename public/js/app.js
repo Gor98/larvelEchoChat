@@ -14326,20 +14326,22 @@ Vue.component('chat-composer', __webpack_require__(56));
 var app = new Vue({
     el: '#app',
     data: {
-        messages: [{
-            message: 'hello',
-            user: 'Jho'
-        }, {
-            message: 'bye',
-            user: 'Vxo'
-        }]
+        messages: []
     },
     methods: {
         addMessage: function addMessage(massage) {
             this.messages.push(massage);
+            axios.post('/message', massage).then(function (response) {});
         }
-    }
+    },
 
+    created: function created() {
+        var _this = this;
+
+        axios.get('/messages').then(function (response) {
+            _this.messages = response.data;
+        });
+    }
 });
 
 /***/ }),
@@ -47874,9 +47876,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['message'],
 
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+    mounted: function mounted() {}
 });
 
 /***/ }),
@@ -47890,7 +47890,7 @@ var render = function() {
   return _c("div", { staticClass: "message" }, [
     _c("p", [
       _vm._v(_vm._s(this.message.message) + " "),
-      _c("b", [_c("i", [_vm._v(_vm._s(this.message.user))])])
+      _c("b", [_c("i", [_vm._v(_vm._s(this.message.user.name))])])
     ])
   ])
 }
@@ -48011,9 +48011,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['messages'],
 
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+    mounted: function mounted() {}
 });
 
 /***/ }),
@@ -48154,17 +48152,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
 
+    props: ['user'],
+
     methods: {
         sendMessage: function sendMessage() {
             this.$emit('message-sent', {
                 message: this.messageText,
-                user: 'Joe Shep'
+                user: {
+                    name: this.user.name
+                }
             });
             this.messageText = '';
         }
     },
     mounted: function mounted() {
-        console.log('Component mounted.');
+        console.log(this.user);
     }
 });
 

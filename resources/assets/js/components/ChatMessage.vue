@@ -1,6 +1,6 @@
 <template>
     <div class="message">
-        <p>{{this.message.message}} <b><i>{{this.message.user}}</i></b></p>
+        <p>{{this.message.message}} <b><i>{{this.message.user.name}}</i></b></p>
     </div>
 </template>
 
@@ -9,7 +9,7 @@
         props: ['message'],
 
         mounted() {
-            console.log('Component mounted.')
+
         }
     }
 </script>

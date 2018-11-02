@@ -1,4 +1,6 @@
 <?php
+use App\User;
+use App\Message;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,13 +14,30 @@
 */
 
 Route::get('/', function () {
-
+return redirect('/chat-room');
 });
 
-Route::get('/chat-room', function () {
-return view('chatroom');
-});
+
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/chat-room', function () {
+
+    return view('chatroom');
+})->middleware('auth');
+
+Route::get('/messages', function () {
+
+return json_encode(Message::with('user')->get());
+})->middleware('auth');
+
+Route::post('/message', function () {
+
+    Auth::user()->messages()->create([
+        'message'=> request()->get('message')
+    ]);
+
+    return ['status'=> 200];
+})->middleware('auth');
+
