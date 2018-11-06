@@ -25,7 +25,10 @@ const app = new Vue({
     data: {
         messages: [
 
-        ]
+        ],
+        usersInChannel: [],
+        isTyping:  false,
+        usertyping:''
     },
     methods:{
         addMessage(massage){
@@ -41,6 +44,45 @@ const app = new Vue({
         axios.get('/messages').then(response =>{
             this.messages = response.data
         });
+
+
+
+        let channel = Echo.join('chatroom')
+            .here( (users) => {
+                this.usersInChannel = users;
+            })
+            .joining( (user) => {
+                this.usersInChannel.push(user);
+            } )
+            .leaving( (user) => {
+                this.usersInChannel = this.usersInChannel.filter(u => u != user);
+            })
+            .listen('MessagePost', (e) => {
+                this.messages.push({
+                   message: e.message.message,
+                   user: e.user
+               });
+            })
+            .listenForWhisper('typing', (e) => {
+                this.usertyping = e.name;
+                setTimeout(function() {
+                    Echo.join('chatroom').whisper('typing', {
+                        name: '',
+                    });
+
+                }, 500);
+
+            });
+
+        //
+        // Echo.private('chatroom')
+        //     .listen('MessagePost', (e) => {
+        //         console.log(e);
+        //     });
+
+
+
+
     }
 
 });

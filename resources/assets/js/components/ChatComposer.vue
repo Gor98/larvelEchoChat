@@ -1,6 +1,6 @@
 <template>
     <div class="chatComposer">
-        <input type="text" placeholder="start typing..." v-model="messageText" @keyup.enter="sendMessage">
+        <input type="text" :placeholder="usertyping" v-model="messageText" @keyup="typing"  @keyup.enter="sendMessage">
         <button class="btn btn-primary" @click="sendMessage">Send</button>
     </div>
 </template>
@@ -12,7 +12,7 @@
                 messageText: ''
             }
         },
-        props:['user'],
+        props:['user','usertyping'],
 
         methods:{
             sendMessage: function () {
@@ -23,8 +23,14 @@
                     },
                 });
                 this.messageText =''
+            },
+            typing(){
+                Echo.join('chatroom').whisper('typing', {
+                    name: this.user.name+' is typing... ',
+                })
             }
-        },
+       },
+
         mounted() {
            
         }

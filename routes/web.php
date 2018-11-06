@@ -1,6 +1,7 @@
 <?php
 use App\User;
 use App\Message;
+use App\Events\MessagePost;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,6 @@ return redirect('/chat-room');
 
 
 
-Auth::routes();
 
 
 Route::get('/chat-room', function () {
@@ -34,10 +34,23 @@ return json_encode(Message::with('user')->get());
 
 Route::post('/message', function () {
 
-    Auth::user()->messages()->create([
+    $user = Auth::user();
+
+    $message = $user->messages()->create([
         'message'=> request()->get('message')
     ]);
 
+    //Announce that new Message has been posted
+    MessagePost::dispatch($message, $user);
+//    broadcast(new MessagePost($message, $user))->toOthers();
+
+
     return ['status'=> 200];
-})->middleware('auth');
+});
+
+Auth::routes();
+
+Route::get('/home', function () {
+    return redirect('/chat-room');
+});
 
