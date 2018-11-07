@@ -1,6 +1,6 @@
 <template>
     <div class="chatComposer">
-        <input type="text" :placeholder="usertyping" v-model="messageText" @keyup="typing"  @keyup.enter="sendMessage">
+        <input type="text" :placeholder="usertyping" v-model="messageText" @keydown="typing"  @blur="stopTyping" @keyup.enter="sendMessage">
         <button class="btn btn-primary" @click="sendMessage">Send</button>
     </div>
 </template>
@@ -27,8 +27,24 @@
             typing(){
                 Echo.join('chatroom').whisper('typing', {
                     name: this.user.name+' is typing... ',
-                })
-            }
+                });
+
+
+                // let channel = Echo.join('chatroom');
+                // let vm = this;
+                // setTimeout(function() {
+                //     channel.whisper('typing', {
+                //         name: vm.user.name+' is typing... ',
+                //     });
+                // }, 300);
+
+            },
+            // stopTyping(){
+            //     Echo.join('chatroom').whisper('typing', {
+            //         name: '',
+            //     });
+            //
+            // }
        },
 
         mounted() {

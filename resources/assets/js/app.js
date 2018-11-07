@@ -45,7 +45,7 @@ const app = new Vue({
             this.messages = response.data
         });
 
-
+        var timer = null;
 
         let channel = Echo.join('chatroom')
             .here( (users) => {
@@ -65,12 +65,13 @@ const app = new Vue({
             })
             .listenForWhisper('typing', (e) => {
                 this.usertyping = e.name;
-                setTimeout(function() {
+                clearTimeout(timer);
+                timer = setTimeout(function() {
                     Echo.join('chatroom').whisper('typing', {
                         name: '',
                     });
 
-                }, 500);
+                }, 300);
 
             });
 

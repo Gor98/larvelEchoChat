@@ -14345,6 +14345,8 @@ var app = new Vue({
             _this.messages = response.data;
         });
 
+        var timer = null;
+
         var channel = Echo.join('chatroom').here(function (users) {
             _this.usersInChannel = users;
         }).joining(function (user) {
@@ -14360,11 +14362,12 @@ var app = new Vue({
             });
         }).listenForWhisper('typing', function (e) {
             _this.usertyping = e.name;
-            setTimeout(function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
                 Echo.join('chatroom').whisper('typing', {
                     name: ''
                 });
-            }, 500);
+            }, 300);
         });
 
         //
@@ -57992,6 +57995,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             Echo.join('chatroom').whisper('typing', {
                 name: this.user.name + ' is typing... '
             });
+
+            // let channel = Echo.join('chatroom');
+            // let vm = this;
+            // setTimeout(function() {
+            //     channel.whisper('typing', {
+            //         name: vm.user.name+' is typing... ',
+            //     });
+            // }, 300);
+        },
+        stopTyping: function stopTyping() {
+            Echo.join('chatroom').whisper('typing', {
+                name: ''
+            });
         }
     },
 
@@ -58019,18 +58035,17 @@ var render = function() {
       attrs: { type: "text", placeholder: _vm.usertyping },
       domProps: { value: _vm.messageText },
       on: {
-        keyup: [
-          _vm.typing,
-          function($event) {
-            if (
-              !("button" in $event) &&
-              _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-            ) {
-              return null
-            }
-            return _vm.sendMessage($event)
+        keydown: _vm.typing,
+        blur: _vm.stopTyping,
+        keyup: function($event) {
+          if (
+            !("button" in $event) &&
+            _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+          ) {
+            return null
           }
-        ],
+          return _vm.sendMessage($event)
+        },
         input: function($event) {
           if ($event.target.composing) {
             return
