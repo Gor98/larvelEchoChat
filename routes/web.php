@@ -14,6 +14,8 @@ use App\Events\MessagePost;
 |
 */
 
+
+
 Route::get('/', function () {
 return redirect('/chat-room');
 });
